@@ -5,21 +5,27 @@ const typeDefs = importSchema("./schema.graphql");
 
 require("dotenv").config();
 
+// Resolvers map for Query fields to data source methods
 const resolvers = {
   Query: {
-    getEthByAddress: (root, _args, { dataSources }) =>
+    getEthByAddress: (root, _args, { dataSources }) => // Calls etherBalanceByAddress() method on data source
       dataSources.ethDataSource.etherBalanceByAddress(),
-    getTotalSupplyEth: (root, _args, { dataSources }) =>
+    getTotalSupplyEth: (root, _args, { dataSources }) => // Calls totalSupplyOfEther() method on data source
       dataSources.ethDataSource.totalSupplyOfEther(),
     //Paste Code for New Resolver Functions
+    getEthPrice: (root, _args, { dataSources }) => // Calls getLatestEthereumPrice() method on data source
+      dataSources.ethDataSource.getLatestEthereumPrice(),
+    getEstimationTimePerTransaction: (root, _args, { dataSources }) => // Calls getBlockConfirmationTime() method on data source
+      dataSources.ethDataSource.getBlockConfirmationTime(),
   },
 };
 
+// Create ApolloServer instance
 const server = new ApolloServer({
   typeDefs,
   resolvers,
   dataSources: () => ({
-    ethDataSource: new EtherDataSource(),
+    ethDataSource: new EtherDataSource(), // Instantiate EtherDataSource
   }),
 });
 
